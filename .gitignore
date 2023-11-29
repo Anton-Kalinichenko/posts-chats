@@ -1,0 +1,54 @@
+# Shared
+credentials
+
+#####################################################################
+
+# Server
+
+/server/.phpunit.cache
+/server/node_modules
+/server/public/build
+/server/public/hot
+/server/public/storage
+/server/storage/*.key
+/server/vendor
+/server/.env
+/server/.env.backup
+/server/.env.production
+/server/.phpunit.result.cache
+/server/Homestead.json
+/server/Homestead.yaml
+/server/auth.json
+/server/npm-debug.log
+/server/yarn-error.log
+/server/.fleet
+/server/.idea
+/server/.vscode
+
+#####################################################################
+# Client
+
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/client/node_modules
+/client/.pnp
+/client/.pnp.js
+
+# testing
+/client/coverage
+
+# production
+/client/build
+
+# misc
+/client/.DS_Store
+/client/.env.local
+/client/.env.development.local
+/client/.env.test.local
+/client/.env.production.local
+
+/client/npm-debug.log*
+/client/yarn-debug.log*
+/client/yarn-error.log*
+
