@@ -1,9 +1,29 @@
 import $api from "../http";
 import { AxiosResponse } from 'axios';
 import { PostsResponse } from '../models/response/PostsResponse';
+import { INewPost } from '../models/INewPost';
 
 export default class PostService {
-    static async fetchPosts(): Promise<AxiosResponse<PostsResponse>> {
-        return $api.get<PostsResponse>('/posts');
+    static async fetchPosts(sort = ''): Promise<AxiosResponse<PostsResponse>> {
+
+        console.log('fetchPosts() sort:', sort);
+
+        return $api.get<PostsResponse>('/posts', {
+            params: {
+                sort: sort,
+            }
+        });
+    }
+
+    static async createPost(newPost: INewPost) {
+        return $api.post('/posts', {
+            title: newPost.title,
+            body: newPost.body,
+            userId: newPost.userId,
+        });
+    }
+
+    static async removePost(postId: number) {
+        return $api.delete(`posts/${postId}`);
     }
 }

@@ -12,18 +12,16 @@ class PostController extends AbstractApiController
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $index = 'index';
+        Log::debug('PostController index()', ['sort' => $request->sort]);
 
-        Log::debug('PostController', ['method' => $index]);
-
-        $posts = PostFacade::all();
+        $posts = PostFacade::getPosts($request->sort);
 
         return $this->responseJSON(
             __('posts.response.200.all'),
             200,
-            $posts != null ? $posts->toArray() : []
+            $posts != null ? $posts : [],
         );
     }
 
@@ -40,7 +38,31 @@ class PostController extends AbstractApiController
      */
     public function store(Request $request)
     {
-        //
+        $nowDate = new \DateTime('now');
+
+        try {
+            PostFacade::create([
+                'user_id' => $request->userId,
+                'title' => $request->title,
+                'body' => $request->body,
+                'created_at' => $nowDate,
+                'updated_at' => $nowDate,
+            ]);
+
+            return $this->responseJSON(
+                __('posts.response.200.store'),
+                200,
+                [],
+            );
+        } catch (\Exception $e) {
+            Log::error($e);
+
+            return $this->responseJSON(
+                __('posts.response.500'),
+                500,
+                [],
+            );
+        }
     }
 
     /**
@@ -72,6 +94,22 @@ class PostController extends AbstractApiController
      */
     public function destroy(string $id)
     {
-        //
+        try {
+            PostFacade::destroy($id);
+
+            return $this->responseJSON(
+                __('posts.response.200.destroy'),
+                200,
+                [],
+            );
+        } catch (\Exception $e) {
+            Log::error($e);
+
+            return $this->responseJSON(
+                __('posts.response.500'),
+                500,
+                [],
+            );
+        }
     }
 }

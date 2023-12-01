@@ -1,6 +1,11 @@
 import React from 'react';
+import SimpleButton from './UI/button/SimpleButton';
 
 const PostItem = (props) => {
+    const removePost = () => {
+        props.remove(props.post.id);
+    };
+
     return (
         <div className="post">
             <div className="post__content">
@@ -10,7 +15,12 @@ const PostItem = (props) => {
                 </div>
             </div>
             <div className="post__btns">
-                <button>Delete</button>
+                <SimpleButton
+                    onClick={removePost}
+                    style={{marginLeft: '0.5em', marginRight: '0.5em'}}
+                >
+                    Delete
+                </SimpleButton>
             </div>
         </div>
     );

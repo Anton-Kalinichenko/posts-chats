@@ -1,4 +1,5 @@
 import React from 'react';
+import SimpleButton from './UI/button/SimpleButton';
 
 class ClassCounter extends React.Component {
     constructor(props) {
@@ -23,9 +24,9 @@ class ClassCounter extends React.Component {
     render() {
         return (
             <div>
-                <h3>{this.state.count}</h3>
-                <button onClick={this.increment}>Increment</button>
-                <button onClick={this.decrement}>Decrement</button>
+                <h3 style={{margin: '0 1rem',}}>{this.state.count}</h3>
+                <SimpleButton onClick={this.increment}>Increment</SimpleButton>
+                <SimpleButton onClick={this.decrement}>Decrement</SimpleButton>
             </div>
         );
     }

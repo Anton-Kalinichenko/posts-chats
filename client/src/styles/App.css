@@ -17,7 +17,18 @@
     display: flex;
     padding: 15px;
     border: 2px solid teal;
+    border-radius: 5px;
     margin-top: 15px;
     justify-content: space-between;
     align-items: center;
+}
+
+.separate_element {
+    margin: 1rem 0;
+}
+
+.separate_button {
+    margin: 1em;
+    padding: 1em;
+    border-radius: 5px;
 }

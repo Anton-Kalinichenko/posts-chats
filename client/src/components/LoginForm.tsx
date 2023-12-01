@@ -1,6 +1,8 @@
 import React, { FC, useContext, useState } from 'react';
 import { Context } from '../index';
 import {observer} from "mobx-react-lite";
+import FormInput from './UI/input/FormInput';
+import SimpleButton from './UI/button/SimpleButton';
 
 const LoginForm: FC = () => {
     const [email, setEmail] = useState<string>('');
@@ -9,19 +11,19 @@ const LoginForm: FC = () => {
 
     return (
         <div>
-            <input
-                onChange={e => setEmail(e.target.value)}
+            <FormInput
+                onChange={(e: any) => setEmail(e.target.value)}
                 value={email}
                 type="text"
                 placeholder="Email"
             />
-            <input
-                onChange={e => setPassword(e.target.value)}
+            <FormInput
+                onChange={(e: any) => setPassword(e.target.value)}
                 value={password}
                 type="password"
                 placeholder="Password"
             />
-            <button onClick={() => {store.login(email, password)}}>Log In</button>
+            <SimpleButton onClick={() => {store.login(email, password)}}>Log In</SimpleButton>
         </div>
     );
 };

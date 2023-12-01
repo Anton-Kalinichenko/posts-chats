@@ -4,7 +4,7 @@ use App\Facades\LocalizationFacade;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\V1\PostController;
 use App\Http\Controllers\Api\V1\CommentController;
-
+use Illuminate\Support\Facades\Log;
 
 /*
 |--------------------------------------------------------------------------
@@ -28,10 +28,14 @@ Route::group(['prefix' => LocalizationFacade::locale(), 'middleware' => ['set_lo
         Route::get('email-confirmation/{confirmation_token}', 'AuthController@emailConfirmation')->name('auth_email_confirmation_v1');
     });
 
-    Route::apiResources([
-        'posts' => PostController::class,
-        'comments' => CommentController::class,
-    ]);
+    Route::prefix('posts')->group(function () {
+        Route::resource('/', PostController::class)->except([
+            'index',
+            'create',
+            'edit',
+        ]);
+        Route::get('{sort?}', [PostController::class, 'index'])->name('post_list');
+    });
 
-    // Route::resource('posts', PostController::class);
+    Route::resource('comments', CommentController::class);
 });
