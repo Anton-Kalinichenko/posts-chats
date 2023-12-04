@@ -27,6 +27,10 @@
     margin: 1rem 0;
 }
 
+.d-flex {
+    display: flex;
+}
+
 .separate_button {
     margin: 1em;
     padding: 1em;

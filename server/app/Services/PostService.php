@@ -4,7 +4,6 @@ namespace App\Services;
 
 use App\Services\BaseService;
 use App\Repositories\PostRepository;
-use Illuminate\Support\Facades\Log;
 
 class PostService extends BaseService
 {
@@ -24,10 +23,8 @@ class PostService extends BaseService
      * @param string $sort
      * @return array
      */
-    public function getPosts(string|null $sort): array
+    public function getPosts(string|null $sort, string|null $search): array
     {
-        Log::debug('PostService getPosts()', ['sort' => $sort]);
-
-        return $this->repo->getPosts($sort);
+        return $this->repo->getPosts($sort, $search);
     }
 }

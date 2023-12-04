@@ -34,7 +34,7 @@ Route::group(['prefix' => LocalizationFacade::locale(), 'middleware' => ['set_lo
             'create',
             'edit',
         ]);
-        Route::get('{sort?}', [PostController::class, 'index'])->name('post_list');
+        Route::get('{sort?}/{search?}', [PostController::class, 'index'])->name('post_list');
     });
 
     Route::resource('comments', CommentController::class);

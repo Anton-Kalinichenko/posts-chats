@@ -1,4 +1,4 @@
-import React, { FC, useContext, useEffect, useState } from 'react';
+import React, { FC, useContext, useEffect, useState, useMemo } from 'react';
 import LoginForm from './components/LoginForm';
 import RegistrationForm from './components/RegistrationForm';
 import { Context } from './index';
@@ -11,15 +11,21 @@ import ClassCounter from './components/ClassCounter';
 import './styles/App.css';
 import PostList from './components/PostList';
 import PostForm from './components/PostForm';
-import Select from './components/UI/select/Select';
 import SimpleButton from './components/UI/button/SimpleButton';
 import FormInput from './components/UI/input/FormInput';
+import PostFilter from './components/PostFilter';
+import Modal from './components/UI/modals/Modal';
 
 const App: FC = () => {
   const {store} = useContext(Context);
   const [posts, setPosts] = useState<IPost[]>([]);
   const [value, setValue] = useState('Text in input');
-  const [selectedSort, setSelectedSort] = useState('');
+  const [filter, setFilter] = useState({
+    sort: '',
+    search: '',
+  })
+  const [createPostModalForm, setCreatePostModalForm] = useState(false);
+  const [postNumber, setPostNumber] = useState(0);
 
   useEffect(() => {
     if (localStorage.getItem('access_token')) {
@@ -28,9 +34,9 @@ const App: FC = () => {
     }
   }, []);
 
-  async function getPosts(sort = '') {
+  async function getPosts() {
     try {
-      const response = await PostService.fetchPosts(sort);
+      const response = await PostService.fetchPosts(filter.sort, filter.search);
       setPosts(response.data.data);
     } catch (e) {
       console.error((e as Error).message);
@@ -38,6 +44,7 @@ const App: FC = () => {
   }
 
   const createPost = async (newPost: INewPost) => {
+    setCreatePostModalForm(false);
     let response = await PostService.createPost(newPost);
 
     if (response.status === 200) {
@@ -55,18 +62,19 @@ const App: FC = () => {
     }
   }
 
-  const sortPosts = (sort: string) => {
-    setSelectedSort(sort);
+  // const sortPosts = (sort: string) => {
+  //   // This is sort implementation for back-end
+  //   if (sort.length > 0) {
+  //     setPosts([...posts].sort((a: any, b: any) => a[sort].localeCompare(b[sort])));
+  //   } else {
+  //     getPosts();
+  //   }
+  // }
 
-    getPosts(sort);
-
-    // // This is sort implementation for back-end
-    // if (sort.length > 0) {
-    //   setPosts([...posts].sort((a: any, b: any) => a[sort].localeCompare(b[sort])));
-    // } else {
-    //   getPosts();
-    // }
-  }
+  // // Example using the useMemo hook
+  // const sortedAndSearchedPosts = useMemo(() => {
+  //   return SortedPosts.filter(post => post.title.includes(searchQuery));
+  // }, [searchQuery, sortedPosts]);
 
   if (store.isLoading) {
     return <div>Loading...</div>
@@ -126,30 +134,31 @@ const App: FC = () => {
         <ClassCounter />
       </div>
 
-      {store.isAuth && <div>
-        <PostForm userId={store.user.id} create={createPost} />
-      </div>}
-
       <hr style={{margin: "15px 0"}} />
+
+      <SimpleButton onClick={() => setCreatePostModalForm(true)} className='separate_button'>
+        Create Post
+      </SimpleButton>
+
+      <Modal visible={createPostModalForm} setVisible={setCreatePostModalForm}>
+        <PostForm userId={store.user.id} create={createPost} />
+      </Modal>
+
       <div className='separate_element'>
-        <h3 style={{marginLeft: '1em',}}>Sorting</h3>
-        <Select
-          defaultValue="None"
-          options={[
-            {value: 'title', name: 'By title'},
-            {value: 'body', name: 'By content'},
-          ]}
-          value={selectedSort}
-          onChange={sortPosts}
+        <PostFilter
+          filter={filter}
+          setFilter={setFilter}
+          getPosts={getPosts}
         />
       </div>
 
-      {posts.length !== 0 ?
-        <div className='separate_element'>
-          <PostList posts={posts} title="Post List" remove={removePost} />
-        </div> :
-        <h2 style={{textAlign: 'center', margin: '1rem 0',}}>Posts weren't found</h2>
-      }
+      <div>
+        <h3 style={{marginLeft: '1em',}}>Found {postNumber} posts</h3>
+      </div>
+
+      <div className='separate_element'>
+        <PostList posts={posts} title="Post List" remove={removePost} />
+      </div>
     </div>
   );
 }

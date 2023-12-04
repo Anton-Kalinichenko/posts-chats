@@ -14,9 +14,9 @@ class PostController extends AbstractApiController
      */
     public function index(Request $request)
     {
-        Log::debug('PostController index()', ['sort' => $request->sort]);
+        // Log::debug('PostController index()', ['request' => $request->all()]);
 
-        $posts = PostFacade::getPosts($request->sort);
+        $posts = PostFacade::getPosts($request->sort, $request->search);
 
         return $this->responseJSON(
             __('posts.response.200.all'),

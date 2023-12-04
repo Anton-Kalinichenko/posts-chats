@@ -26,7 +26,7 @@ const PostForm = ({userId, create}) => {
       }
 
     return (
-        <form>
+        <form style={{paddingRight: '1rem',}}>
           <FormInput
             type="text"
             placeholder="Title"

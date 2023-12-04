@@ -4,7 +4,6 @@ namespace App\Repositories;
 
 use App\Models\Post;
 use App\Repositories\BaseRepository;
-use Illuminate\Support\Facades\Log;
 
 class PostRepository extends BaseRepository
 {
@@ -24,17 +23,18 @@ class PostRepository extends BaseRepository
      * @param string $sort
      * @return array
      */
-    public function getPosts(string|null $sort): array
+    public function getPosts(string|null $sort, string|null $search): array
     {
-        Log::debug('PostRepository getPosts()', ['sort' => $sort]);
-
         $query = $this->model;
 
         if (strlen($sort) > 0) {
             $query = $query->orderBy($sort, 'ASC');
         }
 
-        Log::debug('PostService getPosts()', ['query' => $query]);
+        if (strlen($search) > 0) {
+            $query = $query->where('title', 'like', "%{$search}%")
+                ->orWhere('body', 'like', "%{$search}%");
+        }
 
         return $query->get()->toArray();
     }
