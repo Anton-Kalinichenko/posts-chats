@@ -50,11 +50,13 @@ export default class Store {
     async logout() {
         try {
             await AuthService.logout();
-            this.setAuth(false);
-            this.setUser({} as IUser);
         } catch (e) {
             // this.handleAccessError(e, this.logout);
             console.error((e as Error).message);
+        } finally {
+            this.setAuth(false);
+            this.setUser({} as IUser);
+            localStorage.removeItem('access_token');
         }
     }
 

@@ -22,6 +22,6 @@ export default class PostService {
     }
 
     static async removePost(postId: number) {
-        return $api.delete(`posts/${postId}`);
+        return $api.delete(`/posts/${postId}`);
     }
 }

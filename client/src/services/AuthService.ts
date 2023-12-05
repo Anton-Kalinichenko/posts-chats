@@ -12,11 +12,7 @@ export default class AuthService {
     }
 
     static async logout(): Promise<void> {
-        return $api.post('/auth/logout').then((response) => {
-            if (response.status === 200) {
-                localStorage.removeItem('access_token');
-            }
-        });
+        return $api.post('/auth/logout');
     }
 
     static async refresh(): Promise<AxiosResponse<AuthResponse>> {
