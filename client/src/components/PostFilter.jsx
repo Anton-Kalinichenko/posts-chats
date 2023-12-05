@@ -8,7 +8,7 @@ import SimpleButton from './UI/button/SimpleButton';
 const PostFilter = ({
     filter,
     setFilter,
-    getPosts
+    fetchPosts
 }) => {
     return (
         <div className='d-flex'>
@@ -42,7 +42,7 @@ const PostFilter = ({
         </div>
         <div>
           <div>&nbsp;</div>
-          <SimpleButton onClick={getPosts} style={{marginTop: '17px',}}>Find</SimpleButton>
+          <SimpleButton onClick={fetchPosts} style={{marginTop: '17px',}}>Find</SimpleButton>
         </div>
       </div>
     );

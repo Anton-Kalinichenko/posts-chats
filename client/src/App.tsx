@@ -15,6 +15,8 @@ import SimpleButton from './components/UI/button/SimpleButton';
 import FormInput from './components/UI/input/FormInput';
 import PostFilter from './components/PostFilter';
 import Modal from './components/UI/modals/Modal';
+// import {usePosts} from './hooks/usePosts';
+import Loader from './components/UI/loader/Loader';
 
 const App: FC = () => {
   const {store} = useContext(Context);
@@ -25,22 +27,31 @@ const App: FC = () => {
     search: '',
   })
   const [createPostModalForm, setCreatePostModalForm] = useState(false);
+  const [isPostsLoading, setIsPostsLoading] = useState(false);
+  // const sortedAndSearchedPosts = usePosts(posts, filter.sort, filter.search);
+
   const [postNumber, setPostNumber] = useState(0);
 
   useEffect(() => {
     if (localStorage.getItem('access_token')) {
       store.fetchUser();
-      getPosts();
+      fetchPosts();
     }
   }, []);
 
-  async function getPosts() {
-    try {
-      const response = await PostService.fetchPosts(filter.sort, filter.search);
-      setPosts(response.data.data);
-    } catch (e) {
-      console.error((e as Error).message);
-    }
+  async function fetchPosts() {
+    setIsPostsLoading(true);
+
+    setTimeout(async () => {
+      try {
+        const response = await PostService.fetchPosts(filter.sort, filter.search);
+        setPosts(response.data.data);
+      } catch (e) {
+        console.error((e as Error).message);
+      } finally {
+        setIsPostsLoading(false);
+      }
+    }, 1000);
   }
 
   const createPost = async (newPost: INewPost) => {
@@ -62,22 +73,8 @@ const App: FC = () => {
     }
   }
 
-  // const sortPosts = (sort: string) => {
-  //   // This is sort implementation for back-end
-  //   if (sort.length > 0) {
-  //     setPosts([...posts].sort((a: any, b: any) => a[sort].localeCompare(b[sort])));
-  //   } else {
-  //     getPosts();
-  //   }
-  // }
-
-  // // Example using the useMemo hook
-  // const sortedAndSearchedPosts = useMemo(() => {
-  //   return SortedPosts.filter(post => post.title.includes(searchQuery));
-  // }, [searchQuery, sortedPosts]);
-
   if (store.isLoading) {
-    return <div>Loading...</div>
+    return <h1>Loading...</h1>
   }
 
   if (!store.isAuth) {
@@ -148,7 +145,7 @@ const App: FC = () => {
         <PostFilter
           filter={filter}
           setFilter={setFilter}
-          getPosts={getPosts}
+          fetchPosts={fetchPosts}
         />
       </div>
 
@@ -157,7 +154,12 @@ const App: FC = () => {
       </div>
 
       <div className='separate_element'>
-        <PostList posts={posts} title="Post List" remove={removePost} />
+        {isPostsLoading ?
+          <div style={{display: 'flex', justifyContent: 'center', marginTop: 50}}>
+            <Loader />
+          </div> :
+          <PostList posts={posts} title="Post List" remove={removePost} />
+        }
       </div>
     </div>
   );
