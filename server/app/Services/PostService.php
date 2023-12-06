@@ -18,13 +18,24 @@ class PostService extends BaseService
     }
 
     /**
-     * Gets Posts using input parameters
+     * Gets Posts using request parameters
      *
-     * @param string $sort
+     * @param object $request
      * @return array
      */
-    public function getPosts(string|null $sort, string|null $search): array
+    public function getPosts(object $request): array
     {
-        return $this->repo->getPosts($sort, $search);
+        return $this->repo->getPosts($request);
+    }
+
+    /**
+     * Counts posts, appropriate to the filters
+     *
+     * @param object $request
+     * @return integer
+     */
+    public function countPosts(object $request): int
+    {
+        return $this->repo->countPosts($request);
     }
 }

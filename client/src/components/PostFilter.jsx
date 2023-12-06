@@ -7,8 +7,10 @@ import SimpleButton from './UI/button/SimpleButton';
 
 const PostFilter = ({
     filter,
+    limit,
     setFilter,
-    fetchPosts
+    setCurrentPage,
+    fetchPosts,
 }) => {
     return (
         <div className='d-flex'>
@@ -42,7 +44,10 @@ const PostFilter = ({
         </div>
         <div>
           <div>&nbsp;</div>
-          <SimpleButton onClick={fetchPosts} style={{marginTop: '17px',}}>Find</SimpleButton>
+          <SimpleButton onClick={() => {
+            setCurrentPage(1);
+            fetchPosts(filter.sort, filter.search, limit, 1);
+          }} style={{marginTop: '17px',}}>Find</SimpleButton>
         </div>
       </div>
     );

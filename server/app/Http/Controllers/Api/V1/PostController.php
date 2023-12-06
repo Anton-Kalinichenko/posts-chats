@@ -16,12 +16,26 @@ class PostController extends AbstractApiController
     {
         // Log::debug('PostController index()', ['request' => $request->all()]);
 
-        $posts = PostFacade::getPosts($request->sort, $request->search);
+        $posts = PostFacade::getPosts($request);
+        $postsCount = $posts != null ? PostFacade::countPosts($request) : 0;
+        $pagesCount = $posts != null &&
+            $request->exists('limit') &&
+            $request->limit > 0 &&
+            $postsCount > 0 ?
+                ceil($postsCount / $request->limit) :
+                1;
+
+        $responseData = [
+            'posts' => $posts != null ? $posts : [],
+            'post_count' => $postsCount,
+            'current_page' => $request->exists('page') && $request->page > 0 ? (int) $request->page : 1,
+            'page_count' => $pagesCount,
+        ];
 
         return $this->responseJSON(
             __('posts.response.200.all'),
             200,
-            $posts != null ? $posts : [],
+            $responseData,
         );
     }
 

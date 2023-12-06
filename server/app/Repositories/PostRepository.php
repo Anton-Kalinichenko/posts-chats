@@ -18,24 +18,56 @@ class PostRepository extends BaseRepository
     }
 
     /**
-     * Gets Posts using input parameters
+     * Inits requests for getting posts, appropriate to filters
      *
-     * @param string $sort
-     * @return array
+     * @param object $request
+     * @return object
      */
-    public function getPosts(string|null $sort, string|null $search): array
+    private function initRequest(object $request)
     {
         $query = $this->model;
 
-        if (strlen($sort) > 0) {
-            $query = $query->orderBy($sort, 'ASC');
+        if ($request->exists('sort') && strlen($request->sort) > 0) {
+            $query = $query->orderBy($request->sort, 'ASC');
         }
 
-        if (strlen($search) > 0) {
-            $query = $query->where('title', 'like', "%{$search}%")
-                ->orWhere('body', 'like', "%{$search}%");
+        if ($request->exists('search') && strlen($request->search) > 0) {
+            $query = $query->where('title', 'like', "%{$request->search}%")
+                ->orWhere('body', 'like', "%{$request->search}%");
+        }
+
+        return $query;
+    }
+
+    /**
+     * Gets Posts using request parameters with pagination
+     *
+     * @param object $request
+     * @return array
+     */
+    public function getPosts(object $request): array
+    {
+        $query = $this->initRequest($request);
+
+        if ($request->exists('limit') && $request->limit > 0) {
+            if ($request->exists('page') && $request->page > 0) {
+                $query = $query->skip(($request->page - 1) * $request->limit);
+            }
+
+            $query = $query->take($request->limit);
         }
 
         return $query->get()->toArray();
+    }
+
+    /**
+     * Counts posts, appropriate to the filters
+     *
+     * @param object $request
+     * @return integer
+     */
+    public function countPosts(object $request): int
+    {
+        return $this->initRequest($request)->count();
     }
 }

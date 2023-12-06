@@ -12,15 +12,19 @@ import './styles/App.css';
 import PostList from './components/PostList';
 import PostForm from './components/PostForm';
 import SimpleButton from './components/UI/button/SimpleButton';
+import SimpleLink from './components/UI/link/SimpleLink';
 import FormInput from './components/UI/input/FormInput';
 import PostFilter from './components/PostFilter';
 import Modal from './components/UI/modals/Modal';
 // import {usePosts} from './hooks/usePosts';
 import Loader from './components/UI/loader/Loader';
+import {usePagination} from './hooks/usePagination';
 
 const App: FC = () => {
   const {store} = useContext(Context);
   const [posts, setPosts] = useState<IPost[]>([]);
+  const postsLimit = 10;
+  const [currentPage, setCurrentPage] = useState(1);
   const [value, setValue] = useState('Text in input');
   const [filter, setFilter] = useState({
     sort: '',
@@ -29,23 +33,27 @@ const App: FC = () => {
   const [createPostModalForm, setCreatePostModalForm] = useState(false);
   const [isPostsLoading, setIsPostsLoading] = useState(false);
   // const sortedAndSearchedPosts = usePosts(posts, filter.sort, filter.search);
-
-  const [postNumber, setPostNumber] = useState(0);
+  const [totalPostCount, setTotalPostCount] = useState(0);
+  const pagesArray = usePagination(totalPostCount, postsLimit);
+  const [startPostIndex, setStartPostIndex] = useState(1);
 
   useEffect(() => {
     if (localStorage.getItem('access_token')) {
       store.fetchUser();
-      fetchPosts();
+      fetchPosts(filter.sort, filter.search, postsLimit, currentPage);
     }
   }, []);
 
-  async function fetchPosts() {
+  async function fetchPosts(sort: string, search: string, limit: number, page: number) {
     setIsPostsLoading(true);
 
     setTimeout(async () => {
       try {
-        const response = await PostService.fetchPosts(filter.sort, filter.search);
-        setPosts(response.data.data);
+        const response = await PostService.fetchPosts(sort, search, limit, page);
+        setPosts(response.data.data.posts);
+        setTotalPostCount(response.data.data.post_count);
+        setCurrentPage(response.data.data.current_page);
+        setStartPostIndex(limit * (page - 1));
       } catch (e) {
         console.error((e as Error).message);
       } finally {
@@ -59,8 +67,7 @@ const App: FC = () => {
     let response = await PostService.createPost(newPost);
 
     if (response.status === 200) {
-      response = await PostService.fetchPosts();
-      setPosts(response.data.data);
+      fetchPosts(filter.sort, filter.search, postsLimit, currentPage);
     }
   }
 
@@ -68,9 +75,13 @@ const App: FC = () => {
     let response = await PostService.removePost(postId);
 
     if (response.status === 200) {
-      response = await PostService.fetchPosts();
-      setPosts(response.data.data);
+      fetchPosts(filter.sort, filter.search, postsLimit, currentPage);
     }
+  }
+
+  const selectPage = async (page: number) => {
+    setCurrentPage(page);
+    await fetchPosts(filter.sort, filter.search, postsLimit, page);
   }
 
   if (store.isLoading) {
@@ -144,13 +155,15 @@ const App: FC = () => {
       <div className='separate_element'>
         <PostFilter
           filter={filter}
+          limit={postsLimit}
           setFilter={setFilter}
+          setCurrentPage={setCurrentPage}
           fetchPosts={fetchPosts}
         />
       </div>
 
       <div>
-        <h3 style={{marginLeft: '1em',}}>Found {postNumber} posts</h3>
+        <h3 style={{marginLeft: '1em',}}>Found {totalPostCount} {totalPostCount === 1 ? 'post' : 'posts'}</h3>
       </div>
 
       <div className='separate_element'>
@@ -158,8 +171,21 @@ const App: FC = () => {
           <div style={{display: 'flex', justifyContent: 'center', marginTop: 50}}>
             <Loader />
           </div> :
-          <PostList posts={posts} title="Post List" remove={removePost} />
+          <PostList posts={posts} title="Post List" remove={removePost} startIndex={startPostIndex} />
         }
+      </div>
+
+      <div style={{margin: '2rem 0', textAlign: 'center',}}>
+        {pagesArray.map(page =>
+          <SimpleLink
+            key={page}
+            args={page}
+            active={page === currentPage ? true : false}
+            moveTo={selectPage}
+          >
+            {page}
+          </SimpleLink>
+        )}
       </div>
     </div>
   );
