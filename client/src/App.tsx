@@ -15,10 +15,10 @@ import SimpleButton from './components/UI/button/SimpleButton';
 import SimpleLink from './components/UI/link/SimpleLink';
 import FormInput from './components/UI/input/FormInput';
 import PostFilter from './components/PostFilter';
-import Modal from './components/UI/modals/Modal';
+import Modal from './components/UI/modal/Modal';
 // import {usePosts} from './hooks/usePosts';
 import Loader from './components/UI/loader/Loader';
-import {usePagination} from './hooks/usePagination';
+import Pagination from './components/UI/pagination/Pagination';
 
 const App: FC = () => {
   const {store} = useContext(Context);
@@ -34,7 +34,6 @@ const App: FC = () => {
   const [isPostsLoading, setIsPostsLoading] = useState(false);
   // const sortedAndSearchedPosts = usePosts(posts, filter.sort, filter.search);
   const [totalPostCount, setTotalPostCount] = useState(0);
-  const pagesArray = usePagination(totalPostCount, postsLimit);
   const [startPostIndex, setStartPostIndex] = useState(1);
 
   useEffect(() => {
@@ -175,18 +174,12 @@ const App: FC = () => {
         }
       </div>
 
-      <div style={{margin: '2rem 0', textAlign: 'center',}}>
-        {pagesArray.map(page =>
-          <SimpleLink
-            key={page}
-            args={page}
-            active={page === currentPage ? true : false}
-            moveTo={selectPage}
-          >
-            {page}
-          </SimpleLink>
-        )}
-      </div>
+      <Pagination
+        itemsCount={totalPostCount}
+        itemsPerPage={postsLimit}
+        currentPage={currentPage}
+        selectPage={selectPage}
+      />
     </div>
   );
 }
