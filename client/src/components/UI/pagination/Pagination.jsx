@@ -14,6 +14,7 @@ const Pagination = ({itemsCount, itemsPerPage, currentPage, selectPage}) => {
                     args={page}
                     active={page === currentPage ? true : false}
                     moveTo={selectPage}
+                    style={{margin: '1rem',}}
                 >
                     {page}
                 </SimpleLink>

@@ -1,0 +1,35 @@
+.navbar {
+    height: 50px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    padding: 0 15px;
+    background: lightgray;
+}
+
+.navbar__links {
+    margin-left: 1rem;
+}
+
+.navbar__greeting {
+    margin-left: auto;
+    margin-right: 1rem;
+}
+
+.navbar__link {
+    margin: 0 1rem;
+}
+
+.pending {
+    text-decoration: none;
+    color: blue;
+}
+
+.active {
+    text-decoration: underline;
+    color: red;
+}
+
+.transitioning {
+    color: green;
+}
