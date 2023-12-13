@@ -33,11 +33,15 @@ Route::group(['prefix' => LocalizationFacade::locale(), 'middleware' => ['set_lo
             'index',
             'create',
             'edit',
+            'show',
+            'update',
             'destroy',
         ]);
         Route::get('{sort?}/{search?}/{limit?}/{page?}', [PostController::class, 'index'])->name('post_list');
+        Route::put('/{id}', [PostController::class, 'update'])->name('post_update');
         Route::delete('/{id}', [PostController::class, 'destroy'])->name('post_delete');
     });
+    Route::get('/post/{id}', [PostController::class, 'show'])->name('post_show');
 
     Route::resource('comments', CommentController::class);
 });

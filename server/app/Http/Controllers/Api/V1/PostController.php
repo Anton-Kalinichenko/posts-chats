@@ -84,7 +84,27 @@ class PostController extends AbstractApiController
      */
     public function show(string $id)
     {
-        //
+        try {
+            $post = PostFacade::find($id);
+
+            if ($post) {
+                $post->comments = $post->comments()->get();
+            }
+
+            return $this->responseJSON(
+                __('posts.response.200.show'),
+                200,
+                $post ? $post->toArray() : [],
+            );
+        } catch (\Exception $e) {
+            Log::error($e);
+
+            return $this->responseJSON(
+                __('posts.response.500'),
+                500,
+                [],
+            );
+        }
     }
 
     /**
@@ -100,7 +120,31 @@ class PostController extends AbstractApiController
      */
     public function update(Request $request, string $id)
     {
-        //
+        $nowDate = new \DateTime('now');
+
+        try {
+            $dataToUpdate = [
+                'title' => $request->title,
+                'body' => $request->body,
+                'updated_at' => $nowDate,
+            ];
+
+            PostFacade::update($id, $dataToUpdate);
+
+            return $this->responseJSON(
+                __('posts.response.200.update'),
+                200,
+                [],
+            );
+        } catch (\Exception $e) {
+            Log::error($e);
+
+            return $this->responseJSON(
+                __('posts.response.500'),
+                500,
+                [],
+            );
+        }
     }
 
     /**

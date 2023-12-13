@@ -1,6 +1,7 @@
 import React, { FC, useContext, useEffect, useState } from 'react';
 import { Context } from '../index';
 import {observer} from "mobx-react-lite";
+import {useNavigate} from 'react-router-dom';
 import {IPost} from '../models/IPost';
 import {INewPost} from '../models/INewPost';
 import PostService from '../services/PostService';
@@ -14,6 +15,7 @@ import Pagination from '../components/UI/pagination/Pagination';
 
 const Posts: FC = () => {
   const {store} = useContext(Context);
+  const navigate = useNavigate();
   const [posts, setPosts] = useState<IPost[]>([]);
   const postsLimit = 10;
   const [currentPage, setCurrentPage] = useState(1);
@@ -53,19 +55,15 @@ const Posts: FC = () => {
 
   const createPost = async (newPost: INewPost) => {
     setCreatePostModalForm(false);
-    let response = await PostService.createPost(newPost);
+    let response = await PostService.create(newPost);
 
     if (response.status === 200) {
       fetchPosts(filter.sort, filter.search, postsLimit, currentPage);
     }
   }
 
-  const removePost = async (postId: number) => {
-    let response = await PostService.removePost(postId);
-
-    if (response.status === 200) {
-      fetchPosts(filter.sort, filter.search, postsLimit, currentPage);
-    }
+  const openPost = (postId: number) => {
+    navigate(`/posts/${postId}`);
   }
 
   const selectPage = async (page: number) => {
@@ -96,7 +94,7 @@ const Posts: FC = () => {
       </SimpleButton>
 
       <Modal visible={createPostModalForm} setVisible={setCreatePostModalForm}>
-        <PostForm userId={store.user.id} create={createPost} />
+        <PostForm userId={store.user.id} create={createPost} hideModal={setCreatePostModalForm} />
       </Modal>
 
       <div>
@@ -108,7 +106,7 @@ const Posts: FC = () => {
           <div style={{display: 'flex', justifyContent: 'center', marginTop: 50}}>
             <Loader />
           </div> :
-          <PostList posts={posts} title="Post List" remove={removePost} startIndex={startPostIndex} />
+          <PostList posts={posts} title="Post List" openPost={openPost} startIndex={startPostIndex} />
         }
       </div>
 

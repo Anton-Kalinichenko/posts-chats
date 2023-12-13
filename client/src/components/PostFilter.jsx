@@ -36,7 +36,7 @@ const PostFilter = ({
               onChange={(e) => setFilter({...filter, search: e.target.value})}
             />
             {filter.search.length > 0 &&
-              <IconButton onClick={() => setFilter({...filter, search: ''})}>
+              <IconButton onClick={() => setFilter({...filter, search: ''})} title="Clear Search">
                 <CircleXmark style={{width: 20, height: 20, marginTop: 17}} />
               </IconButton>
             }
