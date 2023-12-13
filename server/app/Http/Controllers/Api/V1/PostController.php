@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\V1\AbstractApiController;
 use Illuminate\Http\Request;
 use App\Facades\PostFacade;
 use Illuminate\Support\Facades\Log;
+use \Carbon\Carbon;
 
 class PostController extends AbstractApiController
 {
@@ -89,6 +90,7 @@ class PostController extends AbstractApiController
 
             if ($post) {
                 $post->comments = $post->comments()->get();
+                $post->user_name = $post->user->name;
             }
 
             return $this->responseJSON(

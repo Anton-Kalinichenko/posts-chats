@@ -8,6 +8,7 @@ import PostItem from '../components/PostItem';
 import CommentItem from '../components/CommentItem';
 import Modal from '../components/UI/modal/Modal';
 import PostForm from '../components/PostForm';
+import CommentForm from '../components/CommentForm';
 
 const Post = () => {
     const {store} = useContext(Context);
@@ -16,6 +17,7 @@ const Post = () => {
     const [post, setPost]: any = useState({});
     const [isLoading, setIsLoading] = useState(false);
     const [editPostModalForm, setEditPostModalForm] = useState(false);
+    const [commentForm, setCommentForm] = useState(false);
 
     const fetchPost = async () => {
         setIsLoading(true);
@@ -35,14 +37,16 @@ const Post = () => {
           }, 1000);
     }
 
+    const commentPost = () => {
+        setCommentForm(true);
+    }
+
     const editPost = () => {
         setEditPostModalForm(true);
     }
 
     const updatePost = async (dataToUpdate: any) => {
         setEditPostModalForm(false);
-
-        console.log('updatePost editedPost:', dataToUpdate);
 
         let response = await PostService.update(dataToUpdate);
 
@@ -57,6 +61,10 @@ const Post = () => {
         if (response.status === 200) {
             navigate('/posts');
         }
+    }
+
+    const createComment = async (newComment: any) => {
+        setCommentForm(false);
     }
 
     useEffect(() => {
@@ -76,8 +84,10 @@ const Post = () => {
         <PostItem
             post={post}
             index={null}
-            editCallback={editPost}
-            removeCallback={removePost}
+            commentCallback={commentPost}
+            editCallback={store.user.id === post.user_id ? editPost : undefined}
+            removeCallback={store.user.id === post.user_id ? removePost: undefined}
+            detailed={true}
         />
 
         <Modal visible={editPostModalForm} setVisible={setEditPostModalForm}>
@@ -89,6 +99,13 @@ const Post = () => {
                 hideModal={setEditPostModalForm}
             />
         </Modal>
+
+        {commentForm && <CommentForm
+            postId={post.id}
+            userId={store.user.id}
+            hideForm={setCommentForm}
+            create={createComment}
+        />}
 
         {typeof post.comments !== 'undefined' && post.comments.length > 0 && post.comments.map((comment: any) => (
             <CommentItem key={comment.id} comment={comment} />

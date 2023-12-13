@@ -15,7 +15,6 @@
 }
 
 .post {
-    display: flex;
     padding: 15px;
     border: 2px solid teal;
     border-radius: 5px;

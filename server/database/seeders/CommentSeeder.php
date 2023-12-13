@@ -30,15 +30,22 @@ class CommentSeeder extends Seeder
         $nowDate = new \DateTime('now');
 
         if (count($this->comments)) {
+            $userId = 1;
+
             foreach ($this->comments as $comment) {
+                if ($userId > 10) {
+                    $userId = 1;
+                }
+
                 DB::table('comments')->insert([
                     'post_id' => $comment['postId'],
-                    'name' => $comment['name'],
-                    'email' => $comment['email'],
+                    'user_id' => $userId,
                     'body' => $comment['body'],
                     'created_at' => $nowDate,
                     'updated_at' => $nowDate,
                 ]);
+
+                $userId++;
             }
         }
     }
