@@ -41,8 +41,8 @@ const Posts: FC = () => {
     setTimeout(async () => {
       try {
         const response = await PostService.fetchPosts(sort, search, limit, page);
-        setPosts(response.data.data.posts);
-        setTotalPostCount(response.data.data.post_count);
+        setPosts(response.data.data.data);
+        setTotalPostCount(response.data.data.total);
         setCurrentPage(response.data.data.current_page);
         setStartPostIndex(limit * (page - 1));
       } catch (e) {

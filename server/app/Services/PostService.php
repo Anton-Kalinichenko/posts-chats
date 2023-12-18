@@ -38,4 +38,29 @@ class PostService extends BaseService
     {
         return $this->repo->countPosts($request);
     }
+
+    /**
+     * Gets posts with extra data by request
+     *
+     * @param object $request
+     * @return array
+     */
+    public function getPostsByRequest(object $request): array
+    {
+        $posts = $this->getPosts($request);
+        $postCount = $posts != null ? $this->countPosts($request) : 0;
+        $pageCount = $posts != null &&
+            !empty($request->limit) &&
+            $postCount > 0 ?
+                ceil($postCount / $request->limit) :
+                1;
+
+        return [
+            'total' => $postCount,
+            'per_page' => !empty($request->limit) ? $request->limit : 1,
+            'current_page' => !empty($request->page) ? (int) $request->page : 1,
+            'last_page' => $pageCount,
+            'data' => $posts != null ? $posts : [],
+        ];
+    }
 }

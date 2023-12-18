@@ -72,7 +72,7 @@ const PostItem = (props) => {
                 style={{display: 'flex', marginTop: '1rem',}}
             >
                 <div style={{marginRight: 'auto',}}>
-                    <strong>From:</strong> {props.post.user_name}
+                    <strong>From:</strong> {props.post?.user?.name}
                 </div>
                 <div style={{marginLeft: 'auto',}}>
                     {props.post.created_at === props.post.updated_at ?

@@ -49,8 +49,8 @@ class PostRepository extends BaseRepository
     {
         $query = $this->initRequest($request);
 
-        if ($request->exists('limit') && $request->limit > 0) {
-            if ($request->exists('page') && $request->page > 0) {
+        if (isset($request->limit) && $request->limit > 0) {
+            if (isset($request->page) && $request->page > 0) {
                 $query = $query->skip(($request->page - 1) * $request->limit);
             }
 

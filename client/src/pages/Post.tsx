@@ -3,6 +3,7 @@ import {observer} from "mobx-react-lite";
 import {useParams, useNavigate} from 'react-router-dom';
 import { Context } from '../index';
 import PostService from '../services/PostService';
+import CommentService from '../services/CommentService';
 import Loader from '../components/UI/loader/Loader';
 import PostItem from '../components/PostItem';
 import CommentItem from '../components/CommentItem';
@@ -65,6 +66,11 @@ const Post = () => {
 
     const createComment = async (newComment: any) => {
         setCommentForm(false);
+        let response = await CommentService.create(newComment);
+
+        if (response.status === 200) {
+            fetchPost();
+        }
     }
 
     useEffect(() => {
@@ -107,7 +113,7 @@ const Post = () => {
             create={createComment}
         />}
 
-        {typeof post.comments !== 'undefined' && post.comments.length > 0 && post.comments.map((comment: any) => (
+        {typeof post.comments !== 'undefined' && post.comments.data.length > 0 && post.comments.data.map((comment: any) => (
             <CommentItem key={comment.id} comment={comment} />
         ))}
     </div>);

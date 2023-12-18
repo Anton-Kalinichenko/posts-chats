@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Controllers\Api\V1\AbstractApiController;
 use Illuminate\Http\Request;
 use App\Facades\PostFacade;
+use App\Facades\CommentFacade;
 use Illuminate\Support\Facades\Log;
 use \Carbon\Carbon;
 
@@ -15,23 +16,7 @@ class PostController extends AbstractApiController
      */
     public function index(Request $request)
     {
-        // Log::debug('PostController index()', ['request' => $request->all()]);
-
-        $posts = PostFacade::getPosts($request);
-        $postsCount = $posts != null ? PostFacade::countPosts($request) : 0;
-        $pagesCount = $posts != null &&
-            $request->exists('limit') &&
-            $request->limit > 0 &&
-            $postsCount > 0 ?
-                ceil($postsCount / $request->limit) :
-                1;
-
-        $responseData = [
-            'posts' => $posts != null ? $posts : [],
-            'post_count' => $postsCount,
-            'current_page' => $request->exists('page') && $request->page > 0 ? (int) $request->page : 1,
-            'page_count' => $pagesCount,
-        ];
+        $responseData = PostFacade::getPostsByRequest($request);
 
         return $this->responseJSON(
             __('posts.response.200.all'),
@@ -89,14 +74,22 @@ class PostController extends AbstractApiController
             $post = PostFacade::find($id);
 
             if ($post) {
-                $post->comments = $post->comments()->get();
-                $post->user_name = $post->user->name;
-            }
+                $post->user = $post->user;
+                $post = $post ? $post->toArray() : [];
 
-            return $this->responseJSON(
+                $commentRequest = [];
+                $commentRequest['post_id'] = $post['id'];
+                $commentRequest['limit'] = 10;
+                $commentRequest['page'] = 1;
+                $post['comments'] = CommentFacade::getCommentsByRequest((object) $commentRequest);
+
+                $post['created_at'] = Carbon::parse($post['created_at'])->format('Y-m-d H:i:s');
+                $post['updated_at'] = Carbon::parse($post['updated_at'])->format('Y-m-d H:i:s');}
+
+                return $this->responseJSON(
                 __('posts.response.200.show'),
                 200,
-                $post ? $post->toArray() : [],
+                $post ?? [],
             );
         } catch (\Exception $e) {
             Log::error($e);

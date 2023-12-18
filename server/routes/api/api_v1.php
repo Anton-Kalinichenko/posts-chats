@@ -43,5 +43,15 @@ Route::group(['prefix' => LocalizationFacade::locale(), 'middleware' => ['set_lo
     });
     Route::get('/post/{id}', [PostController::class, 'show'])->name('post_show');
 
-    Route::resource('comments', CommentController::class);
+    Route::prefix('comments')->group(function () {
+        Route::resource('/', CommentController::class)->except([
+            'index',
+            'edit',
+            'store',
+            'show',
+            'update',
+            'destroy',
+        ]);
+        Route::get('{post_id}/{limit?}/{page?}', [CommentController::class, 'index'])->name('comment_list');
+    });
 });

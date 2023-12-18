@@ -1,12 +1,12 @@
-import { IPost } from '../IPost';
+import { IComment } from '../IComment';
 
-export interface PostsResponse {
+export interface CommentsResponse {
     data: {
         total: number;
         per_page: number;
         current_page: number;
         last_page: number;
-        data: IPost[];
+        data: IComment[];
     };
     message: string;
     success: boolean;
