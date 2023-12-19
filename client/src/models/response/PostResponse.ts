@@ -7,7 +7,13 @@ export interface PostResponse {
         user: IUser;
         title: string;
         body: string;
-        comments: IComment[];
+        comments: {
+            total: number;
+            per_page: number;
+            current_page: number;
+            last_page: number;
+            data: IComment[];
+        };
         created_at: string;
         updated_at: string;
     };

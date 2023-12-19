@@ -38,7 +38,7 @@ const CommentForm = (props) => {
     }
 
     return (
-        <form style={{padding: '1rem', background: 'lavender'}}>
+        <form style={{padding: '1rem', background: 'lavender', borderRadius: '5px',}}>
             <IconButton
                 title="Close"
                 style={{textAlign: 'end', cursor: 'auto',}}

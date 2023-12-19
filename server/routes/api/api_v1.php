@@ -53,5 +53,8 @@ Route::group(['prefix' => LocalizationFacade::locale(), 'middleware' => ['set_lo
             'destroy',
         ]);
         Route::get('{post_id}/{limit?}/{page?}', [CommentController::class, 'index'])->name('comment_list');
+        Route::put('/{id}', [CommentController::class, 'update'])->name('comment_update');
     });
+    Route::get('/comment/{id}', [CommentController::class, 'show'])->name('comment_show');
+    Route::delete('comment/{id}', [CommentController::class, 'destroy'])->name('comment_delete');
 });

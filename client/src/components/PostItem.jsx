@@ -4,6 +4,7 @@ import { ReactComponent as EyeSolid} from '../images/icons/eye-solid.svg';
 import { ReactComponent as CommentRegular} from '../images/icons/comment-regular.svg';
 import { ReactComponent as PenToSquareSolid} from '../images/icons/pen-to-square-solid.svg';
 import { ReactComponent as TrashCanSolid} from '../images/icons/trash-can-solid.svg';
+import {formatTimeString} from '../utils/dates';
 
 const PostItem = (props) => {
     const open = () => {
@@ -72,12 +73,12 @@ const PostItem = (props) => {
                 style={{display: 'flex', marginTop: '1rem',}}
             >
                 <div style={{marginRight: 'auto',}}>
-                    <strong>From:</strong> {props.post?.user?.name}
+                    From: <strong>{props.post?.user?.name}</strong>
                 </div>
                 <div style={{marginLeft: 'auto',}}>
                     {props.post.created_at === props.post.updated_at ?
-                        <span><strong>Created:</strong> {props.post.created_at}</span> :
-                        <span><strong>Updated:</strong> {props.post.updated_at}</span>
+                        <span>Created: <strong>{formatTimeString(props.post.created_at)}</strong></span> :
+                        <span>Updated: <strong>{formatTimeString(props.post.updated_at)}</strong></span>
                     }
                 </div>
             </div>}

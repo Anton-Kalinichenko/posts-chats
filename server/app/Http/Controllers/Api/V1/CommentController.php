@@ -69,7 +69,28 @@ class CommentController extends AbstractApiController
      */
     public function show(string $id)
     {
-        //
+        try {
+            $comment = CommentFacade::find($id);
+
+            if ($comment) {
+                $comment->user = $comment->user;
+                $comment = $comment->toArray();
+            }
+
+            return $this->responseJSON(
+                __('comments.response.200.show'),
+                200,
+                $comment ?? [],
+            );
+        } catch (\Exception $e) {
+            Log::error($e);
+
+            return $this->responseJSON(
+                __('posts.response.500'),
+                500,
+                [],
+            );
+        }
     }
 
     /**
@@ -85,7 +106,30 @@ class CommentController extends AbstractApiController
      */
     public function update(Request $request, string $id)
     {
-        //
+        $nowDate = new \DateTime('now');
+
+        try {
+            $dataToUpdate = [
+                'body' => $request->body,
+                'updated_at' => $nowDate,
+            ];
+
+            CommentFacade::update($id, $dataToUpdate);
+
+            return $this->responseJSON(
+                __('comments.response.200.update'),
+                200,
+                [],
+            );
+        } catch (\Exception $e) {
+            Log::error($e);
+
+            return $this->responseJSON(
+                __('posts.response.500'),
+                500,
+                [],
+            );
+        }
     }
 
     /**
@@ -93,6 +137,22 @@ class CommentController extends AbstractApiController
      */
     public function destroy(string $id)
     {
-        //
+        try {
+            CommentFacade::destroy($id);
+
+            return $this->responseJSON(
+                __('comments.response.200.destroy'),
+                200,
+                [],
+            );
+        } catch (\Exception $e) {
+            Log::error($e);
+
+            return $this->responseJSON(
+                __('posts.response.500'),
+                500,
+                [],
+            );
+        }
     }
 }

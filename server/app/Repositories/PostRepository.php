@@ -57,7 +57,9 @@ class PostRepository extends BaseRepository
             $query = $query->take($request->limit);
         }
 
-        return $query->get()->toArray();
+        return $query->orderBy('created_at', 'DESC')
+            ->get()
+            ->toArray();
     }
 
     /**

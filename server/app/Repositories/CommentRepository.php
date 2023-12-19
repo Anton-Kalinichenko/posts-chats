@@ -48,7 +48,8 @@ class CommentRepository extends BaseRepository
             $query = $query->take($request->limit);
         }
 
-        return $query->get();
+        return $query->orderBy('created_at', 'DESC')
+            ->get();
     }
 
     /**

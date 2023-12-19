@@ -16,6 +16,7 @@ const Post = () => {
     const params: any = useParams();
     const navigate = useNavigate();
     const [post, setPost]: any = useState({});
+    const [comments, setComments]: any = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [editPostModalForm, setEditPostModalForm] = useState(false);
     const [commentForm, setCommentForm] = useState(false);
@@ -26,10 +27,11 @@ const Post = () => {
         setTimeout(async () => {
             try {
               const response = await PostService.fetchPost(params.postId);
+
+              console.log('Post fetchPost response:', response);
+
               setPost(response.data.data);
-
-              console.log('openPost response.data.data:', response.data.data);
-
+              setComments(response.data.data.comments.data);
             } catch (e) {
               console.error((e as Error).message);
             } finally {
@@ -73,6 +75,10 @@ const Post = () => {
         }
     }
 
+    const removeComment = (commentId: number) => {
+        setComments(comments.filter((comment: any) => comment.id !== commentId));
+    }
+
     useEffect(() => {
         if (localStorage.getItem('access_token')) {
             store.fetchUser();
@@ -113,8 +119,14 @@ const Post = () => {
             create={createComment}
         />}
 
-        {typeof post.comments !== 'undefined' && post.comments.data.length > 0 && post.comments.data.map((comment: any) => (
-            <CommentItem key={comment.id} comment={comment} />
+        {comments.length > 0 && comments.map((comment: any) => (
+            <CommentItem
+                key={comment.id}
+                postId={post.id}
+                comment={comment}
+                userId={store.user.id}
+                removeCallback={removeComment}
+            />
         ))}
     </div>);
 }

@@ -82,11 +82,9 @@ class PostController extends AbstractApiController
                 $commentRequest['limit'] = 10;
                 $commentRequest['page'] = 1;
                 $post['comments'] = CommentFacade::getCommentsByRequest((object) $commentRequest);
+            }
 
-                $post['created_at'] = Carbon::parse($post['created_at'])->format('Y-m-d H:i:s');
-                $post['updated_at'] = Carbon::parse($post['updated_at'])->format('Y-m-d H:i:s');}
-
-                return $this->responseJSON(
+            return $this->responseJSON(
                 __('posts.response.200.show'),
                 200,
                 $post ?? [],

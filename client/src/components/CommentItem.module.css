@@ -1,4 +1,4 @@
-.commentBody {
+.comment {
     width: 90%;
     margin-left: auto;
     margin-top: 1rem;
@@ -6,4 +6,19 @@
     padding: 0.5rem;
     background: lavender;
     border-radius: 5px;
+}
+
+.commentBody {
+    display: flex;
+}
+
+.commentBtns {
+    display: flex;
+    margin-bottom: auto;
+    margin-left: auto;
+}
+
+.commentDetails {
+    display: flex;
+    margin-top: 1rem;
 }
