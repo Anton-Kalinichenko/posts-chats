@@ -7,7 +7,6 @@ use Illuminate\Http\Request;
 use App\Facades\PostFacade;
 use App\Facades\CommentFacade;
 use Illuminate\Support\Facades\Log;
-use \Carbon\Carbon;
 
 class PostController extends AbstractApiController
 {
@@ -42,7 +41,7 @@ class PostController extends AbstractApiController
 
         try {
             PostFacade::create([
-                'user_id' => $request->userId,
+                'user_id' => $request->user_id,
                 'title' => $request->title,
                 'body' => $request->body,
                 'created_at' => $nowDate,
@@ -81,7 +80,6 @@ class PostController extends AbstractApiController
                 $commentRequest['post_id'] = $post['id'];
                 $commentRequest['limit'] = 10;
                 $commentRequest['page'] = 1;
-                $post['comments'] = CommentFacade::getCommentsByRequest((object) $commentRequest);
             }
 
             return $this->responseJSON(
@@ -141,12 +139,13 @@ class PostController extends AbstractApiController
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove the specified post with their comments.
      */
     public function destroy(string $id)
     {
         try {
             PostFacade::destroy($id);
+            CommentFacade::destroyPostComments($id);
 
             return $this->responseJSON(
                 __('posts.response.200.destroy'),

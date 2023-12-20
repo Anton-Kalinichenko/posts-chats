@@ -62,4 +62,15 @@ class CommentRepository extends BaseRepository
     {
         return $this->initRequest($request)->count();
     }
+
+    /**
+     * Destroys comments that belongs to post
+     *
+     * @param integer $postId
+     * @return void
+     */
+    public function destroyPostComments(int $postId)
+    {
+        $this->model->where('post_id', $postId)->delete();
+    }
 }

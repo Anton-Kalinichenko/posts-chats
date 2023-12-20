@@ -46,7 +46,12 @@ const PostFilter = ({
           <div>&nbsp;</div>
           <SimpleButton onClick={() => {
             setCurrentPage(1);
-            fetchPosts(filter.sort, filter.search, limit, 1);
+            fetchPosts({
+              sort: filter.sort,
+              search: filter.search,
+              limit: limit,
+              page: 1,
+            });
           }} style={{marginTop: '17px',}}>Find</SimpleButton>
         </div>
       </div>

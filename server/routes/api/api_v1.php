@@ -37,7 +37,7 @@ Route::group(['prefix' => LocalizationFacade::locale(), 'middleware' => ['set_lo
             'update',
             'destroy',
         ]);
-        Route::get('{sort?}/{search?}/{limit?}/{page?}', [PostController::class, 'index'])->name('post_list');
+        Route::get('/{sort?}/{search?}/{limit?}/{page?}', [PostController::class, 'index'])->name('post_list');
         Route::put('/{id}', [PostController::class, 'update'])->name('post_update');
         Route::delete('/{id}', [PostController::class, 'destroy'])->name('post_delete');
     });
@@ -52,7 +52,7 @@ Route::group(['prefix' => LocalizationFacade::locale(), 'middleware' => ['set_lo
             'update',
             'destroy',
         ]);
-        Route::get('{post_id}/{limit?}/{page?}', [CommentController::class, 'index'])->name('comment_list');
+        Route::get('/{post_id?}/{parent_id?}/{limit?}/{page?}', [CommentController::class, 'index'])->name('comment_list');
         Route::put('/{id}', [CommentController::class, 'update'])->name('comment_update');
     });
     Route::get('/comment/{id}', [CommentController::class, 'show'])->name('comment_show');

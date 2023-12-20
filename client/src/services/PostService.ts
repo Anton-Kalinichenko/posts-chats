@@ -4,15 +4,16 @@ import { PostsResponse } from '../models/response/PostsResponse';
 import { PostResponse } from '../models/response/PostResponse';
 import { INewPost } from '../models/INewPost';
 import {IDataToUpdatePost} from '../models/IDataToUpdatePost';
+import {IDataToFetchPosts} from '../models/IDataToFetchPosts';
 
 export default class PostService {
-    static async fetchPosts(sort = '', search = '', limit: number = 1, page: number = 1): Promise<AxiosResponse<PostsResponse>> {
+    static async fetchPosts(dataToFetchPosts: IDataToFetchPosts): Promise<AxiosResponse<PostsResponse>> {
         return $api.get<PostsResponse>('/posts', {
             params: {
-                sort: sort,
-                search: search,
-                limit: limit,
-                page: page,
+                sort: dataToFetchPosts.sort,
+                search: dataToFetchPosts.search,
+                limit: dataToFetchPosts.limit,
+                page: dataToFetchPosts.page,
             }
         });
     }
@@ -25,7 +26,7 @@ export default class PostService {
         return $api.post('/posts', {
             title: newPost.title,
             body: newPost.body,
-            userId: newPost.userId,
+            user_id: newPost.userId,
         });
     }
 

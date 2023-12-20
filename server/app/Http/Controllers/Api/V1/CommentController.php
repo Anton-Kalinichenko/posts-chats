@@ -32,10 +32,10 @@ class CommentController extends AbstractApiController
 
         try {
             CommentFacade::create([
-                'post_id' => $request->postId,
+                'post_id' => $request->post_id,
                 'body' => $request->body,
-                'user_id' => $request->userId,
-                'parent_id' => $request->parentId,
+                'user_id' => $request->user_id,
+                'parent_id' => $request->parent_id,
                 'created_at' => $nowDate,
                 'updated_at' => $nowDate,
             ]);

@@ -67,4 +67,15 @@ class CommentService extends BaseService
             'data' => $comments != null ? $comments : [],
         ];
     }
+
+    /**
+     * Destroys comments that belongs to post
+     *
+     * @param integer $postId
+     * @return void
+     */
+    public function destroyPostComments(int $postId)
+    {
+        $this->repo->destroyPostComments($postId);
+    }
 }

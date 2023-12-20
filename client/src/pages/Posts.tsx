@@ -40,7 +40,12 @@ const Posts: FC = () => {
 
     setTimeout(async () => {
       try {
-        const response = await PostService.fetchPosts(sort, search, limit, page);
+        const response = await PostService.fetchPosts({
+          sort: sort,
+          search: search,
+          limit: limit,
+          page: page
+        });
         setPosts(response.data.data.data);
         setTotalPostCount(response.data.data.total);
         setCurrentPage(response.data.data.current_page);

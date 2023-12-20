@@ -6,7 +6,7 @@ import PostService from '../services/PostService';
 import CommentService from '../services/CommentService';
 import Loader from '../components/UI/loader/Loader';
 import PostItem from '../components/PostItem';
-import CommentItem from '../components/CommentItem';
+import CommentList from '../components/CommentList';
 import Modal from '../components/UI/modal/Modal';
 import PostForm from '../components/PostForm';
 import CommentForm from '../components/CommentForm';
@@ -27,11 +27,8 @@ const Post = () => {
         setTimeout(async () => {
             try {
               const response = await PostService.fetchPost(params.postId);
-
-              console.log('Post fetchPost response:', response);
-
               setPost(response.data.data);
-              setComments(response.data.data.comments.data);
+            //   fetchComments(response.data.data.id);
             } catch (e) {
               console.error((e as Error).message);
             } finally {
@@ -75,10 +72,6 @@ const Post = () => {
         }
     }
 
-    const removeComment = (commentId: number) => {
-        setComments(comments.filter((comment: any) => comment.id !== commentId));
-    }
-
     useEffect(() => {
         if (localStorage.getItem('access_token')) {
             store.fetchUser();
@@ -119,15 +112,10 @@ const Post = () => {
             create={createComment}
         />}
 
-        {comments.length > 0 && comments.map((comment: any) => (
-            <CommentItem
-                key={comment.id}
-                postId={post.id}
-                comment={comment}
-                userId={store.user.id}
-                removeCallback={removeComment}
-            />
-        ))}
+        <CommentList
+            postId={post.id}
+            userId={store.user.id}
+        />
     </div>);
 }
 
