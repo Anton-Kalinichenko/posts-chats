@@ -7,6 +7,7 @@ import { ReactComponent as TrashCanSolid} from '../images/icons/trash-can-solid.
 import {formatTimeString} from '../utils/dates';
 import CommentForm from '../components/CommentForm';
 import CommentService from '../services/CommentService';
+import ConfirmationModal from './UI/modal/ConfirmationModal';
 
 const CommentItem = (props) => {
     const [showEditCommentForm, setShowEditCommentForm] = useState(false);
@@ -18,6 +19,7 @@ const CommentItem = (props) => {
         createdAt: props.comment.created_at,
         updatedAt: props.comment.updated_at,
     });
+    const [visibleConfirmationModal, setVisibleConfirmationModal] = useState(false);
 
     const edit = () => {
         setShowEditCommentForm(true);
@@ -44,7 +46,12 @@ const CommentItem = (props) => {
         }
     }
 
+    const removeConfirmation = () => {
+        setVisibleConfirmationModal(true);
+    }
+
     const remove = async () => {
+        setVisibleConfirmationModal(false);
         let response = await CommentService.remove(comment.id);
 
         if (response.status === 200 && props.removeCallback !== undefined) {
@@ -53,60 +60,70 @@ const CommentItem = (props) => {
     }
 
     return (
-        <div className={cl.comment}>
-            {showEditCommentForm ?
-                <CommentForm
-                    commentId={comment.id}
-                    body={comment.body}
-                    hideForm={setShowEditCommentForm}
-                    update={updateComment}
-                /> :
-                <div>
-                    <div className={cl.commentBody}>
-                        <div>
-                            {comment.body}
-                        </div>
-                        <div className={cl.commentBtns}>
-                            <IconButton
-                                onClick={props.commentCallback}
-                                title="Comment"
-                            >
-                                <CommentRegular style={{width: 20, height: 20, margin: '0 0.5rem',}} />
-                            </IconButton>
-
-                            {props.userId === comment.userId && <div style={{display: 'flex',}}>
+        <div>
+            <div className={cl.comment}>
+                {showEditCommentForm ?
+                    <CommentForm
+                        commentId={comment.id}
+                        body={comment.body}
+                        hideForm={setShowEditCommentForm}
+                        update={updateComment}
+                    /> :
+                    <div>
+                        <div className={cl.commentBody}>
+                            <div>
+                                {comment.body}
+                            </div>
+                            <div className={cl.commentBtns}>
                                 <IconButton
-                                    onClick={edit}
-                                    title="Edit"
+                                    onClick={props.commentCallback}
+                                    title="Comment"
                                 >
-                                    <PenToSquareSolid style={{width: 20, height: 20, margin: '0 0.5rem',}} />
+                                    <CommentRegular style={{width: 20, height: 20, margin: '0 0.5rem',}} />
                                 </IconButton>
 
-                                <IconButton
-                                    onClick={remove}
-                                    title="Delete"
-                                >
-                                    <TrashCanSolid style={{width: 20, height: 20, margin: '0 0.5rem',}} />
-                                </IconButton>
-                            </div>}
+                                {props.userId === comment.userId && <div style={{display: 'flex',}}>
+                                    <IconButton
+                                        onClick={edit}
+                                        title="Edit"
+                                    >
+                                        <PenToSquareSolid style={{width: 20, height: 20, margin: '0 0.5rem',}} />
+                                    </IconButton>
+
+                                    <IconButton
+                                        onClick={removeConfirmation}
+                                        title="Delete"
+                                    >
+                                        <TrashCanSolid style={{width: 20, height: 20, margin: '0 0.5rem',}} />
+                                    </IconButton>
+                                </div>}
+                            </div>
+                        </div>
+                        <div className={cl.commentDetails}>
+                            <div style={{marginRight: 'auto',}}>
+                                From: <strong>{props.userId !== comment.userId ?
+                                    comment.userName :
+                                    'You'
+                                }</strong>
+                            </div>
+                            <div style={{marginLeft: 'auto',}}>
+                                {comment.createdAt === comment.updatedAt ?
+                                    <span>Created: <strong>{formatTimeString(comment.createdAt)}</strong></span> :
+                                    <span>Updated: <strong>{formatTimeString(comment.updatedAt)}</strong></span>
+                                }
+                            </div>
                         </div>
                     </div>
-                    <div className={cl.commentDetails}>
-                        <div style={{marginRight: 'auto',}}>
-                            From: <strong>{props.userId !== comment.userId ?
-                                comment.userName :
-                                'You'
-                            }</strong>
-                        </div>
-                        <div style={{marginLeft: 'auto',}}>
-                            {comment.createdAt === comment.updatedAt ?
-                                <span>Created: <strong>{formatTimeString(comment.createdAt)}</strong></span> :
-                                <span>Updated: <strong>{formatTimeString(comment.updatedAt)}</strong></span>
-                            }
-                        </div>
-                    </div>
-                </div>
-            }
+                }
+            </div>
+
+            <ConfirmationModal
+                visible={visibleConfirmationModal}
+                setVisible={setVisibleConfirmationModal}
+                title='Comment Deleting'
+                content={`Are you sure you want to delete the comment ${comment.body}?`}
+                confirmAction={remove}
+            />
         </div>
     );
 }

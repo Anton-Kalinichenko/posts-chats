@@ -1,0 +1,44 @@
+.modal {
+    position: absolute;
+    z-index: 10;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    display: none;
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.modalContainer {
+    background: white;
+    border-radius: 15px;
+    min-width: 500px;
+}
+
+.modal.active {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modalHeader {
+    display: flex;
+    background-color:lightgray;
+    padding: 15px;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+}
+
+.modalContent {
+    padding: 25px 15px;
+}
+
+.modalFooter {
+    display: flex;
+    padding-right: 15px;
+    padding-bottom: 15px;
+}
+
+.modalBtn {
+    margin: 0 1rem;
+}

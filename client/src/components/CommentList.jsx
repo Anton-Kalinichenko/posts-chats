@@ -65,7 +65,7 @@ const CommentList = (props) => {
         }
 
         return [];
-      }, [currentPage]);
+      }, [currentPage, comments]);
 
     useEffect(() => {
         if (props.postId) {
