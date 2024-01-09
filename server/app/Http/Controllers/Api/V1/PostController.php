@@ -75,11 +75,6 @@ class PostController extends AbstractApiController
             if ($post) {
                 $post->user = $post->user;
                 $post = $post ? $post->toArray() : [];
-
-                $commentRequest = [];
-                $commentRequest['post_id'] = $post['id'];
-                $commentRequest['limit'] = 10;
-                $commentRequest['page'] = 1;
             }
 
             return $this->responseJSON(

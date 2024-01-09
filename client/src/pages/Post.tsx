@@ -17,7 +17,7 @@ const Post = () => {
     const navigate = useNavigate();
     const [post, setPost]: any = useState({});
     const [comments, setComments]: any = useState([]);
-    const [isLoading, setIsLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
     const [editPostModalForm, setEditPostModalForm] = useState(false);
     const [commentForm, setCommentForm] = useState(false);
 
@@ -73,8 +73,7 @@ const Post = () => {
     }
 
     useEffect(() => {
-        if (localStorage.getItem('access_token')) {
-            store.fetchUser();
+        if (store.isAuth) {
             fetchPost();
         }
     }, []);

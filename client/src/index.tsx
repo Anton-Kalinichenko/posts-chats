@@ -18,11 +18,11 @@ const root = ReactDOM.createRoot(
 );
 
 root.render(
-  <React.StrictMode>
+  // <React.StrictMode>
     <Context.Provider value={{
       store
     }}>
       <App />
     </Context.Provider>
-  </React.StrictMode>
+  // </React.StrictMode>
 );

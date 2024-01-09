@@ -1,39 +1,36 @@
-import React, {useContext} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {observer} from "mobx-react-lite";
 import {Context} from '../index';
-import {Routes, Route, Navigate} from 'react-router-dom';
-import Home from '../pages/Home';
-import Posts from '../pages/Posts';
-import Post from '../pages/Post';
-import Login from '../pages/auth/Login';
-import Register from '../pages/auth/Register';
-import Error404 from '../pages/error/404';
+import {Routes, Route} from 'react-router-dom';
+import {sharedRoutes, publicRoutes, privateRoutes} from '../router/index';
 
 const AppRouter = () => {
     const {store} = useContext(Context);
+    const [isAuth, setIsAuth] = useState(false);
+
+    useEffect(() => {
+      if (localStorage.getItem('access_token') && !store.isAuth) {
+        store.fetchUser();
+      }
+
+      setIsAuth(store.isAuth);
+    }, [store.isAuth]);
 
     return (
         <Routes>
-          <Route path="/" element={<Home />} />
-          <Route
-            path="/posts"
-            element={store.isAuth && store.user.email_verified_at ? <Posts /> : <Navigate to="/" />}
-          />
-          <Route
-            path="/posts/:postId"
-            element={store.isAuth && store.user.email_verified_at ? <Post /> : <Navigate to="/" />}
-          />
-          <Route
-            path="/login"
-            element={store.isAuth && store.user.email_verified_at ?
-              <Navigate to="/posts" /> :
-                store.isAuth && !store.user.email_verified_at ?
-                  <Navigate to="/" /> :
-              <Login />
-            }
-          />
-          <Route path="/register" element={store.isAuth ? <Navigate to="/" /> : <Register />} />
-          <Route path="*" element={<Error404 />} />
+          {isAuth ? <>
+              {privateRoutes.map((route: any) => (
+                <Route key={route.path} path={route.path} element={route.component} />
+              ))}
+            </> : <>
+              {publicRoutes.map((route: any) => (
+                <Route key={route.path} path={route.path} element={route.component} />
+              ))}
+            </>
+          }
+          {sharedRoutes.map((route: any) => (
+            <Route key={route.path} path={route.path} element={route.component} />
+          ))}
         </Routes>
     );
 }

@@ -1,23 +1,14 @@
-import React, {useContext, useEffect} from 'react';
+import React from 'react';
 import {useNavigate} from 'react-router-dom';
-import {observer} from "mobx-react-lite";
-import {Context} from '../../index';
 import Img404 from '../../images/404.png';
 import SimpleButton from '../../components/UI/button/SimpleButton';
 
 const Error_404 = () => {
     const navigate = useNavigate();
-    const {store} = useContext(Context);
 
     const backToHome = () => {
         navigate('/');
     }
-
-    useEffect(() => {
-        if (localStorage.getItem('access_token')) {
-            store.fetchUser();
-        }
-    }, []);
 
     return (
         <div>
@@ -31,4 +22,4 @@ const Error_404 = () => {
     );
 }
 
-export default observer(Error_404);
+export default Error_404;

@@ -9,6 +9,11 @@ const LoginForm: FC = () => {
     const [password, setPassword] = useState<string>('');
     const {store} = useContext(Context);
 
+    const login = () => {
+        store.login(email, password);
+        store.fetchUser();
+    }
+
     return (
         <div>
             <FormInput
@@ -23,7 +28,7 @@ const LoginForm: FC = () => {
                 type="password"
                 placeholder="Password"
             />
-            <SimpleButton onClick={() => {store.login(email, password)}}>Log In</SimpleButton>
+            <SimpleButton onClick={login}>Log In</SimpleButton>
         </div>
     );
 };

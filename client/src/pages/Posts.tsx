@@ -29,8 +29,7 @@ const Posts: FC = () => {
   const [startPostIndex, setStartPostIndex] = useState(1);
 
   useEffect(() => {
-    if (localStorage.getItem('access_token')) {
-      store.fetchUser();
+    if (store.isAuth) {
       fetchPosts(filter.sort, filter.search, postsLimit, currentPage);
     }
   }, []);

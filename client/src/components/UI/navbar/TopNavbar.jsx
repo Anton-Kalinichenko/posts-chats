@@ -1,4 +1,4 @@
-import React, {useContext, useEffect} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import cl from './TopNavbar.module.css';
 import {NavLink, useNavigate} from 'react-router-dom';
 import { Context } from '../../../index';
@@ -7,6 +7,7 @@ import {observer} from "mobx-react-lite";
 const TopNavbar = () => {
     const {store} = useContext(Context);
     const navigate = useNavigate();
+    const [userName, setUserName] = useState('');
 
     const setLinkStyles = (isActive, isPending, isTransitioning) => {
         return [
@@ -23,6 +24,14 @@ const TopNavbar = () => {
         store.logout();
         navigate('/');
     }
+
+    useEffect(() => {
+        if (store.isAuth) {
+            setUserName(store.user.name);
+        } else {
+            setUserName('Guest');
+        }
+    }, [store.isAuth]);
 
     return (
         <div className={cl.navbar}>
@@ -68,7 +77,8 @@ const TopNavbar = () => {
                 }
             </div>
             <div className={cl.navbar__greeting}>
-                <h3>Hello, {Object.keys(store.user).length > 0 ? store.user.name : 'Guest'}!</h3>
+                {/* <h3>Hello, {Object.keys(store.user).length > 0 ? store.user.name : 'Guest'}!</h3> */}
+                <h3>Hello, {userName}!</h3>
             </div>
         </div>
     );

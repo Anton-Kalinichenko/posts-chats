@@ -11,6 +11,11 @@ const RegistrationForm: FC = () => {
     const [passwordConfirmation, setPasswordConfirmation] = useState<string>('');
     const {store} = useContext(Context);
 
+    const registration = () => {
+        store.registration(name, email, password, passwordConfirmation);
+        store.fetchUser();
+    }
+
     return (
         <div>
             <FormInput
@@ -38,7 +43,7 @@ const RegistrationForm: FC = () => {
                 placeholder="Password Confirmation"
             />
             <SimpleButton
-                onClick={() => {store.registration(name, email, password, passwordConfirmation)}}
+                onClick={registration}
             >
                 Register
             </SimpleButton>
