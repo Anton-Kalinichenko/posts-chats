@@ -139,6 +139,7 @@ class CommentController extends AbstractApiController
     {
         try {
             CommentFacade::destroy($id);
+            // CommentFacade::destroyCommentWithReplies($id);
 
             return $this->responseJSON(
                 __('comments.response.200.destroy'),

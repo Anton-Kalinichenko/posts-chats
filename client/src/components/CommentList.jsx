@@ -1,9 +1,12 @@
-import React, {useState, useEffect, useMemo} from 'react';
+import React, {useContext, useState, useEffect, useMemo} from 'react';
+import {observer} from "mobx-react-lite";
+import {Context} from '../index';
 import CommentItem from './CommentItem';
 import CommentService from '../services/CommentService';
 import { InView } from 'react-intersection-observer';
 
 const CommentList = (props) => {
+    const {store} = useContext(Context);
     const postId = props.postId;
     const parentId = props.parentId !== undefined ? props.parentId : 0;
     const [comments, setComments] = useState([]);
@@ -28,6 +31,10 @@ const CommentList = (props) => {
             );
             setCurrentPage(response.data.data.current_page);
             setLastPage(response.data.data.last_page);
+
+            if (props.setTotalComments !== undefined) {
+                props.setTotalComments(response.data.data.total);
+            }
         } catch (e) {
             console.error(e.message);
         }
@@ -103,4 +110,4 @@ const CommentList = (props) => {
     );
 };
 
-export default CommentList;
+export default observer(CommentList);

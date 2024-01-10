@@ -57,6 +57,12 @@ class CommentService extends BaseService
 
         foreach ($comments as $key => $comment) {
             $comments[$key]->user = $comment->user;
+            $repliesRequest = [
+                'post_id' => $comment->post_id,
+                'parent_id' => $comment->id,
+            ];
+
+            $comments[$key]->repliesCount = $this->countComments((object) $repliesRequest) ?? 0;
         }
 
         return [
@@ -77,5 +83,16 @@ class CommentService extends BaseService
     public function destroyPostComments(int $postId)
     {
         $this->repo->destroyPostComments($postId);
+    }
+
+    /**
+     * Destroys comment with its replies
+     *
+     * @param integer $id
+     * @return void
+     */
+    public function destroyCommentWithReplies(int $id)
+    {
+
     }
 }

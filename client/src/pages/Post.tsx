@@ -20,6 +20,7 @@ const Post = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [editPostModalForm, setEditPostModalForm] = useState(false);
     const [commentForm, setCommentForm] = useState(false);
+    const [totalComments, setTotalComments] = useState(0);
 
     const fetchPost = async () => {
         setIsLoading(true);
@@ -28,7 +29,6 @@ const Post = () => {
             try {
               const response = await PostService.fetchPost(params.postId);
               setPost(response.data.data);
-            //   fetchComments(response.data.data.id);
             } catch (e) {
               console.error((e as Error).message);
             } finally {
@@ -111,9 +111,17 @@ const Post = () => {
             create={createComment}
         />}
 
+        {totalComments > 0 ?
+            <h4 style={{margin: '1rem',}}>Found {totalComments} {
+                totalComments > 1 ? 'comments' : 'comment'
+            }</h4> :
+            <h4>There are no comments</h4>
+        }
+
         <CommentList
             postId={post.id}
             userId={store.user.id}
+            setTotalComments={setTotalComments}
         />
     </div>);
 }

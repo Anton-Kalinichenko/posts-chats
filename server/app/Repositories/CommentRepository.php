@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Models\Comment;
 use App\Repositories\BaseRepository;
+use Illuminate\Support\Facades\Log;
 
 class CommentRepository extends BaseRepository
 {
@@ -25,7 +26,21 @@ class CommentRepository extends BaseRepository
      */
     private function initRequest(object $request)
     {
-        return $this->model->where('post_id', $request->post_id);
+        // Log::debug('CommentRepository initRequest(): ', ['request' => $request]);
+
+        $query = $this->model->where('post_id', $request->post_id);
+
+        if (!empty($request->parent_id) &&
+            $request->parent_id != 0 &&
+            $request->parent_id != null &&
+            $request->parent_id != ''
+        ) {
+            $query = $query->where('parent_id', $request->parent_id);
+        } else {
+            $query = $query->where('parent_id', null);
+        }
+
+        return $query;
     }
 
     /**
@@ -36,8 +51,6 @@ class CommentRepository extends BaseRepository
      */
     public function getComments(object $request): object
     {
-        // dd($request);
-
         $query = $this->initRequest($request);
 
         if (!empty($request->limit) && $request->limit > 0) {
