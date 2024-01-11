@@ -26,7 +26,7 @@ const CommentItem = (props) => {
         userName: props.comment.user.name,
         createdAt: props.comment.created_at,
         updatedAt: props.comment.updated_at,
-        repliesCount: props.comment.repliesCount,
+        repliesCount: props.comment.replies_count,
     });
     const [visibleConfirmationModal, setVisibleConfirmationModal] = useState(false);
     const [showReplies, setShowReplies] = useState(false);
@@ -72,6 +72,7 @@ const CommentItem = (props) => {
                 ...comment,
                 body: response.data.data.body,
                 updatedAt: response.data.data.updated_at,
+                repliesCount: response.data.data.replies_count,
             });
         }
     }
@@ -87,6 +88,10 @@ const CommentItem = (props) => {
         if (response.status === 200 && props.removeCallback !== undefined) {
             props.removeCallback(comment.id);
         }
+    }
+
+    const removeCommentFromList = () => {
+        fetchComment(comment.id);
     }
 
     return (
@@ -193,6 +198,7 @@ const CommentItem = (props) => {
                         postId={props.postId}
                         parentId={comment.id}
                         userId={store.user.id}
+                        removeCallback={removeCommentFromList}
                     />
                 </div>
             }

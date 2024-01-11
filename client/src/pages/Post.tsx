@@ -111,11 +111,13 @@ const Post = () => {
             create={createComment}
         />}
 
-        {totalComments > 0 ?
-            <h4 style={{margin: '1rem',}}>Found {totalComments} {
-                totalComments > 1 ? 'comments' : 'comment'
-            }</h4> :
-            <h4>There are no comments</h4>
+        {totalComments > 0 && <h4
+                style={{margin: '1rem',}}
+            >
+                Found {totalComments} {
+                    totalComments > 1 ? 'comments' : 'comment'
+                }
+            </h4>
         }
 
         <CommentList

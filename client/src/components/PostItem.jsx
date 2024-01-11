@@ -44,7 +44,7 @@ const PostItem = (props) => {
                             {props.post.body}
                         </div>
                     </div>
-                    <div className="post__btns" style={{display: 'flex', marginBottom: 'auto'}}>
+                    <div className="post__btns" style={{display: 'flex', marginBottom: 'auto', marginLeft: 'auto',}}>
                         {props.openCallback !== undefined && <IconButton
                                 onClick={open}
                                 title="Open"
@@ -98,7 +98,7 @@ const PostItem = (props) => {
                 visible={visibleConfirmationModal}
                 setVisible={setVisibleConfirmationModal}
                 title='Post Deleting'
-                content={`Are you sure you want to delete post ${props.post.title} with his comments?`}
+                content={`Are you sure you want to delete post ${props.post.title} with its comments?`}
                 confirmAction={remove}
             />
         </div>

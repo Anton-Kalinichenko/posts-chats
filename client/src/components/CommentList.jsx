@@ -54,6 +54,10 @@ const CommentList = (props) => {
 
     const removeComment = (commentId) => {
         setComments(comments.filter((comment) => comment.id !== commentId));
+
+        if (props.removeCallback !== undefined) {
+            props.removeCallback();
+        }
     }
 
     const fetchMoreComments = (inView) => {

@@ -77,6 +77,19 @@ class CommentRepository extends BaseRepository
     }
 
     /**
+     * Destroys comment and its replies
+     *
+     * @param integer $commentId
+     * @return void
+     */
+    public function destroyComment(int $commentId)
+    {
+        $this->destroy($commentId);
+        $replies = $this->getReplies($commentId)->toArray();
+        $this->destroyAllReplies($replies);
+    }
+
+    /**
      * Destroys comments that belongs to post
      *
      * @param integer $postId
@@ -84,6 +97,67 @@ class CommentRepository extends BaseRepository
      */
     public function destroyPostComments(int $postId)
     {
+        $postComments = $this->model->where('post_id', $postId)->get()->toArray();
         $this->model->where('post_id', $postId)->delete();
+        $replies = $this->getAllReplies($postComments);
+        $this->destroyAllReplies($replies);
+    }
+
+    /**
+     * Gets all replies for comments array
+     *
+     * @param array $comments
+     * @return array
+     */
+    private function getAllReplies(array $comments): array
+    {
+        $replies = [];
+
+        foreach ($comments as $comment) {
+            $replies = array_merge($replies, $this->getReplies($comment['id'])->toArray());
+        }
+
+        return $replies;
+    }
+
+    /**
+     * Gets replies by the parent_id
+     *
+     * @param integer $parentId
+     * @return object|null
+     */
+    private function getReplies(int $parentId)
+    {
+        return $this->model->where('parent_id', $parentId)->get();
+    }
+
+    /**
+     * Destroys comments by its array
+     *
+     * @param array $comments
+     * @return void
+     */
+    private function destroyComments(array $comments)
+    {
+        foreach ($comments as $comment) {
+            $this->destroy($comment['id']);
+        }
+    }
+
+    /**
+     * Destroys all replies
+     *
+     * @param array $replies
+     * @return void
+     */
+    private function destroyAllReplies(array $replies)
+    {
+        if (count($replies)) {
+            while(count($replies)) {
+                $newReplies = $this->getAllReplies($replies);
+                $this->destroyComments($replies);
+                $replies = $newReplies;
+            }
+        }
     }
 }

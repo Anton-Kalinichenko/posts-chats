@@ -74,6 +74,13 @@ class CommentController extends AbstractApiController
 
             if ($comment) {
                 $comment->user = $comment->user;
+
+                $repliesRequest = [
+                    'post_id' => $comment->post_id,
+                    'parent_id' => $comment->id,
+                ];
+
+                $comment->replies_count = CommentFacade::countComments((object) $repliesRequest) ?? 0;
                 $comment = $comment->toArray();
             }
 
@@ -138,8 +145,7 @@ class CommentController extends AbstractApiController
     public function destroy(string $id)
     {
         try {
-            CommentFacade::destroy($id);
-            // CommentFacade::destroyCommentWithReplies($id);
+            CommentFacade::destroyComment($id);
 
             return $this->responseJSON(
                 __('comments.response.200.destroy'),
